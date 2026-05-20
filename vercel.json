@@ -13,6 +13,9 @@
     ],
     "env": {
         "APP_CACHE_DIR": "/tmp/cache",
-        "APP_LOG_DIR": "/tmp/log"
+        "APP_LOG_DIR": "/tmp/log",
+        "APP_ENV": "prod",
+        "APP_DEBUG": "0"
     }
 }
+

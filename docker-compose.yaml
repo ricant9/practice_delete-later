@@ -1,0 +1,56 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: final-project-app
+    volumes:
+      - .:/var/www/html
+      - app_var:/var/www/html/var
+    networks:
+      - final-project-network
+    depends_on:
+      - db
+    environment:
+      APP_ENV: prod
+      APP_SECRET: ${APP_SECRET}
+      DATABASE_URL: "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}?serverVersion=8.0.32&charset=utf8mb4"
+      PORT: 8080
+    ports:
+      - "8000:8080"
+
+  db:
+    image: mysql:8.0
+    container_name: final-project-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - final-project-db-data:/var/lib/mysql
+    networks:
+      - final-project-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: final-project-phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    networks:
+      - final-project-network
+
+volumes:
+  final-project-db-data:
+  app_var:
+
+networks:
+  final-project-network:
